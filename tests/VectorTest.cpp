@@ -9,7 +9,6 @@ namespace ccystd {
 namespace VectorTest {
 
 // testCase1: fill constructor, range constructor
-// TODO: enable after implementing vector(n, value), vector(n), range ctor
  void testCase1()
  {
      std::vector<std::string> v1(10, "zxh");
@@ -20,10 +19,10 @@ namespace VectorTest {
      ccystd::vector<std::string> v4(10);
      assert(test::container_equal(v3, v4));
 
-     /*std::array<std::string, 3> arr = { "abc", "def", "ghi" };
+     std::array<std::string, 3> arr = { "abc", "def", "ghi" };
      std::vector<std::string> v5(std::begin(arr), std::end(arr));
      ccystd::vector<std::string> v6(std::begin(arr), std::end(arr));
-     assert(test::container_equal(v5, v6));*/
+     assert(test::container_equal(v5, v6));
  }
 
 // testCase2: copy/move constructor and assignment
@@ -223,39 +222,38 @@ void testCase13()
 
 // testCase14: operator== and operator!= comparison
 // TODO: enable after implementing operator== and operator!=
-// void testCase14()
-// {
-//     ccystd::vector<int> foo(3, 100);
-//     ccystd::vector<int> bar(2, 200);
-//     assert(!(foo == bar));
-//     assert(foo != bar);
-// }
+ void testCase14()
+ {
+     ccystd::vector<int> foo(3, 100);
+     ccystd::vector<int> bar(2, 200);
+     assert(!(foo == bar));
+     assert(foo != bar);
+ }
+
+class TestItem {
+public:
+    TestItem() { ++count; }
+    TestItem(const TestItem&) { ++count; }
+    virtual ~TestItem() { --count; }
+    static int getCount() { return count; }
+    static int count;
+};
+int TestItem::count = 0;
 
 // testCase15: memory leak detection (construct/destruct count)
-// TODO: enable after implementing vector(n) and insert
-// void testCase15()
-// {
-//     class TestItem {
-//     public:
-//         TestItem() { ++count; }
-//         TestItem(const TestItem&) { ++count; }
-//         virtual ~TestItem() { --count; }
-//         static int getCount() { return count; }
-//     private:
-//         static int count;
-//     };
-//     int TestItem::count = 0;
-//
-//     assert(TestItem::getCount() == 0);
-//     {
-//         ccystd::vector<TestItem> t(10);
-//         t.push_back(TestItem());
-//         t.push_back(TestItem());
-//         t.push_back(TestItem());
-//         t.insert(t.begin(), t.begin(), t.begin() + 1);
-//     }
-//     assert(TestItem::getCount() == 0);
-// }
+void testCase15()
+{
+    TestItem::count = 0;
+    assert(TestItem::getCount() == 0);
+    {
+        ccystd::vector<TestItem> t(10);
+        t.push_back(TestItem());
+        t.push_back(TestItem());
+        t.push_back(TestItem());
+        t.insert(t.begin(), t.begin(), t.begin() + 1);
+    }
+    assert(TestItem::getCount() == 0);
+}
 
 void testAllCases()
 {
@@ -272,9 +270,8 @@ void testAllCases()
     testCase11();  // TODO: pop_back
     testCase12();  // TODO: insert
     testCase13();
-    // testCase14();  // TODO: operator==
-    // testCase15();  // TODO: vector(n), insert
+    testCase14();  // TODO: operator==
+    testCase15();
 }
-
 } // namespace VectorTest
 } // namespace ccystd

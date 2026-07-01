@@ -31,6 +31,14 @@ vector<T>::vector(size_t n) {
 }
 
 template <class T>
+template <class InputIt, class>
+vector<T>::vector(InputIt first, InputIt last) : _ptr(nullptr), _size(0), _cap(0) {
+    for (auto it = first; it != last; ++it) {
+        push_back(*it);
+    }
+}
+
+template <class T>
 vector<T>::vector(const vector& other) : vector() {
     reserve(other._size);
     for (int i = 0; i < other._size; ++i) _ptr[_size++] = other._ptr[i];
@@ -158,8 +166,8 @@ void vector<T>::insert(const_iterator pos, const_iterator first, const_iterator 
 
     // copy elements
     if (is_self) {
-        // self-insertion: reserve invalidates pointers, recalculate offset to reposition
-        const_iterator real_first = begin() + first_offset;
+        size_t source_offset = (first_offset >= index) ? first_offset + count : first_offset;
+        const_iterator real_first = begin() + source_offset;
         for (size_t i = 0; i < count; ++i) {
             new (_ptr + index + i) T(*(real_first + i));
         }

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstddef>
+#include <type_traits>
 #include "ccystd/iterator.h"
 
 namespace ccystd {
@@ -18,6 +19,8 @@ public:
     vector() noexcept;
     vector(size_t n, const T& val);
     vector(size_t n);
+    template <class InputIt, class = decltype(*std::declval<InputIt>())>
+    vector(InputIt first, InputIt last);
     vector(const vector& other);
     vector(vector&& other) noexcept;
     ~vector();
